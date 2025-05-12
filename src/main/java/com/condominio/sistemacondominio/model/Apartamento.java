@@ -1,5 +1,6 @@
 package com.condominio.sistemacondominio.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class Apartamento {
     private int andar;
 
     @OneToMany(mappedBy = "apartamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference  // Evita loop recursivo
     private List<Morador> moradores;
 
     // Getters e Setters
