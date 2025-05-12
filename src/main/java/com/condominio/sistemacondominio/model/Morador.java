@@ -15,7 +15,7 @@ public class Morador {
 
     // Relacionamento ManyToOne com Apartamento
     @ManyToOne
-    @JoinColumn(name = "apartamento_id") // Nome da coluna de chave estrangeira no banco de dados
+    @JoinColumn(name = "apartamento_id")
     private Apartamento apartamento;
 
     // Getters e Setters
