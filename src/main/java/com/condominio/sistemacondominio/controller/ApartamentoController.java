@@ -18,31 +18,35 @@ public class ApartamentoController {
     @Autowired
     private ApartamentoService apartamentoService;
 
+    // Cadastra novo apartamento
     @PostMapping
     public ResponseEntity<?> salvarApartamento(@RequestBody Apartamento apartamento) {
         try {
             Apartamento novoApartamento = apartamentoService.salvarApartamento(apartamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoApartamento);
         } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao salvar apartamento");
+            return ResponseEntity.badRequest().body("Erro: Já existe um apartamento com este número/bloco");
         }
     }
 
+    // Lista todos os apartamentos
     @GetMapping
     public ResponseEntity<List<Apartamento>> listarTodos() {
         List<Apartamento> apartamentos = apartamentoService.listarTodos();
-        return ResponseEntity.ok(apartamentos);
+        return apartamentos.isEmpty() ? 
+               ResponseEntity.noContent().build() : 
+               ResponseEntity.ok(apartamentos);
     }
 
+    // Busca por ID
     @GetMapping("/{id}")
     public ResponseEntity<Apartamento> buscarPorId(@PathVariable Long id) {
-        return apartamentoService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Apartamento> apartamento = apartamentoService.buscarPorId(id);
+        return apartamento.map(ResponseEntity::ok)
+                          .orElse(ResponseEntity.notFound().build());
     }
 
+    // Busca por bloco
     @GetMapping("/bloco/{bloco}")
     public ResponseEntity<List<Apartamento>> buscarPorBloco(@PathVariable String bloco) {
         List<Apartamento> apartamentos = apartamentoService.buscarPorBloco(bloco);
@@ -51,58 +55,41 @@ public class ApartamentoController {
                ResponseEntity.ok(apartamentos);
     }
 
+    // Busca por andar
     @GetMapping("/andar/{andar}")
-    public ResponseEntity<List<Apartamento>> buscarPorAndar(@PathVariable int andar) {
+    public ResponseEntity<List<Apartamento>> buscarPorAndar(@PathVariable Integer andar) {
         List<Apartamento> apartamentos = apartamentoService.buscarPorAndar(andar);
         return apartamentos.isEmpty() ? 
                ResponseEntity.noContent().build() : 
                ResponseEntity.ok(apartamentos);
     }
 
-    @GetMapping("/ocupados")
-    public ResponseEntity<List<Apartamento>> buscarApartamentosOcupados() {
-        List<Apartamento> apartamentos = apartamentoService.buscarApartamentosOcupados();
-        return apartamentos.isEmpty() ? 
-               ResponseEntity.noContent().build() : 
-               ResponseEntity.ok(apartamentos);
-    }
-
-    @GetMapping("/vagos")
-    public ResponseEntity<List<Apartamento>> buscarApartamentosVagos() {
-        List<Apartamento> apartamentos = apartamentoService.buscarApartamentosVagos();
-        return apartamentos.isEmpty() ? 
-               ResponseEntity.noContent().build() : 
-               ResponseEntity.ok(apartamentos);
-    }
-
-    @GetMapping("/blocos")
-    public ResponseEntity<List<String>> listarBlocos() {
-        List<String> blocos = apartamentoService.listarBlocos();
-        return blocos.isEmpty() ? 
-               ResponseEntity.noContent().build() : 
-               ResponseEntity.ok(blocos);
-    }
-
-    @GetMapping("/buscar")
-    public ResponseEntity<Apartamento> buscarPorNumeroBloco(
-            @RequestParam String numero, 
-            @RequestParam String bloco) {
-        return apartamentoService.buscarPorNumeroBloco(numero, bloco)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
+    // Atualiza apartamento
     @PutMapping("/{id}")
     public ResponseEntity<Apartamento> atualizarApartamento(
-            @PathVariable Long id, 
+            @PathVariable Long id,
             @RequestBody Apartamento apartamento) {
         Apartamento atualizado = apartamentoService.atualizarApartamento(id, apartamento);
         return ResponseEntity.ok(atualizado);
     }
 
+    // Deleta apartamento
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarApartamento(@PathVariable Long id) {
         apartamentoService.deletarPorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Endpoints adicionais (opcionais)
+    @GetMapping("/vagos")
+    public ResponseEntity<List<Apartamento>> buscarVagos() {
+        List<Apartamento> apartamentos = apartamentoService.buscarApartamentosVagos();
+        return ResponseEntity.ok(apartamentos);
+    }
+
+    @GetMapping("/blocos")
+    public ResponseEntity<List<String>> listarBlocos() {
+        List<String> blocos = apartamentoService.listarBlocos();
+        return ResponseEntity.ok(blocos);
     }
 }

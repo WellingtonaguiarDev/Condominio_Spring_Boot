@@ -48,7 +48,47 @@ public class Apartamento {
         this.andar = andar;
     }
 
-    // Getters e Setters (manter os que você já tinha e adicionar os novos)
+    // Getters e Setters COMPLETOS e CORRETOS
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getBloco() {
+        return bloco;
+    }
+
+    public void setBloco(String bloco) {
+        this.bloco = bloco;
+    }
+
+    public Integer getAndar() {
+        return andar;
+    }
+
+    public void setAndar(Integer andar) {
+        this.andar = andar;
+    }
+
+    public List<Morador> getMoradores() {
+        return moradores;
+    }
+
+    public void setMoradores(List<Morador> moradores) {
+        this.moradores = moradores;
+    }
+
     public List<Ocorrencia> getOcorrencias() {
         return ocorrencias;
     }
@@ -65,9 +105,15 @@ public class Apartamento {
         this.reservas = reservas;
     }
 
-    // Método toString para facilitar a visualização
+    // Métodos úteis
     @Override
     public String toString() {
         return "Apartamento " + numero + ", Bloco " + bloco + ", Andar " + andar;
+    }
+
+    // Método para adicionar morador mantendo a consistência bidirecional
+    public void adicionarMorador(Morador morador) {
+        moradores.add(morador);
+        morador.setApartamento(this);
     }
 }
