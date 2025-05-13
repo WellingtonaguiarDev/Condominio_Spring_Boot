@@ -1,5 +1,6 @@
 package com.condominio.sistemacondominio.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ public class Apartamento {
     private Integer andar;
 
     @OneToMany(mappedBy = "apartamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference  // Evita loop recursivo
     private List<Morador> moradores;
 
     @OneToMany(mappedBy = "apartamento", cascade = CascadeType.ALL)

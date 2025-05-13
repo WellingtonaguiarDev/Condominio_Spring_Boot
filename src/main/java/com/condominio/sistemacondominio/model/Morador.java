@@ -1,5 +1,7 @@
 package com.condominio.sistemacondominio.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,9 +15,9 @@ public class Morador {
     private String email;
     private String telefone;
 
-    // Relacionamento ManyToOne com Apartamento
     @ManyToOne
     @JoinColumn(name = "apartamento_id")
+    @JsonBackReference
     private Apartamento apartamento;
 
     // Getters e Setters
